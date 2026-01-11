@@ -3,46 +3,38 @@ import OpenAI from 'openai';
 
 @Injectable()
 export class AiReviewService {
-  private client: OpenAI;
+  private client = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
-  constructor() {
-    this.client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-  }
-
-  async reviewCode(code: string) {
+  async reviewCode(code: string): Promise<string> {
     const prompt = `
-You are a senior code reviewer.
+You are a professional code review assistant.
 
-ALWAYS respond in EXACTLY this format:
+STRICT RULES:
+- Respond ONLY in the format below
+- Do NOT explain outside the format
+- Infer the programming language automatically
 
-Problems:
-- list each problem
+FORMAT:
 
-Suggestions:
-- list suggestions
+PROBLEMS:
+- bullet points
 
-Improved Code:
-\`\`\`
-<improved code>
-\`\`\`
+SUGGESTIONS:
+- bullet points
 
-Code to review:
-\`\`\`
+IMPROVED_CODE:
+<only improved code, no markdown, no explanation>
+
+CODE TO REVIEW:
 ${code}
-\`\`\`
 `;
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
       temperature: 0.2,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
+      messages: [{ role: 'user', content: prompt }],
     });
 
     return response.choices[0].message.content ?? '';
