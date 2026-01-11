@@ -13,33 +13,38 @@ export class AiReviewService {
 
   async reviewCode(code: string) {
     const prompt = `
-You are a code review assistant.
+You are a senior code reviewer.
 
-1. Detect the programming language of the following code.
-2. Provide a code review including:
-   - Problems
-   - Suggestions
-   - Example Improvement (full improved code in the same language)
-
-Respond in this exact format:
+ALWAYS respond in EXACTLY this format:
 
 Problems:
-1. ...
-Suggestions:
-1. ...
-Example Improvement:
-<full improved code here>
+- list each problem
 
-Code:
+Suggestions:
+- list suggestions
+
+Improved Code:
+\`\`\`
+<improved code>
+\`\`\`
+
+Code to review:
+\`\`\`
 ${code}
+\`\`\`
 `;
 
     const response = await this.client.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
       temperature: 0.2,
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     });
 
-    return response.choices[0].message.content;
+    return response.choices[0].message.content ?? '';
   }
 }
