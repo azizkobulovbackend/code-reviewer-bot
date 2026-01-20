@@ -18,7 +18,7 @@ export function registerBotHandlers(
 
   // /start
   bot.command('start', async (ctx) => {
-    await ctx.reply('👋 Welcome!\n\nUse /review to send code for AI review.');
+    await ctx.reply('👋Welcome vibecoder');
   });
 
   // /review
