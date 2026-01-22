@@ -24,7 +24,7 @@ export function registerBotHandlers(
   // /review
   bot.command('review', async (ctx) => {
     awaitingCode.add(ctx.chat.id);
-    await ctx.reply('📨 Send your code for AI review');
+    await ctx.reply('📨 Send your code for review');
   });
 
   // Handle text
@@ -41,7 +41,7 @@ export function registerBotHandlers(
 
     awaitingCode.delete(ctx.chat.id);
 
-    await ctx.reply('🤖 Analyzing with AI...');
+    await ctx.reply('🤖 Analyzing...');
 
     const aiFeedback = await aiReviewService.reviewCode(text);
 
